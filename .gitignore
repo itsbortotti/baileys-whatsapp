@@ -1,0 +1,58 @@
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Diretórios
+/dist
+/node_modules
+/coverage
+/build
+/sessions
+/.nyc_output
+.temp
+.tmp
+
+# Logs
+/logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - Other
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# WhatsApp
+/sessions/*.json
+/sessions/*.txt

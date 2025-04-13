@@ -1,0 +1,44 @@
+export const ERROR_CONSTANTS = {
+  ERROR_CODES: {
+    // Sessão
+    SESSION_NOT_FOUND: 'SESSION_NOT_FOUND',
+    SESSION_ALREADY_EXISTS: 'SESSION_ALREADY_EXISTS',
+    SESSION_CONNECTION_FAILED: 'SESSION_CONNECTION_FAILED',
+
+    // Mensagem
+    MESSAGE_VALIDATION_FAILED: 'MESSAGE_VALIDATION_FAILED',
+    MESSAGE_SENDING_FAILED: 'MESSAGE_SENDING_FAILED',
+    MESSAGE_QUEUE_FULL: 'MESSAGE_QUEUE_FULL',
+
+    // Autenticação
+    AUTH_FAILED: 'AUTH_FAILED',
+    QR_CODE_EXPIRED: 'QR_CODE_EXPIRED',
+
+    // Sistema
+    SYSTEM_ERROR: 'SYSTEM_ERROR',
+    MAINTENANCE_ERROR: 'MAINTENANCE_ERROR',
+    INTERNAL_ERROR: 'INTERNAL_ERROR',
+  },
+
+  HTTP_STATUS: {
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    CONFLICT: 409,
+    INTERNAL_ERROR: 500,
+  },
+
+  ERROR_MESSAGES: {
+    SESSION_NOT_FOUND: 'Sessão não encontrada',
+    SESSION_ALREADY_EXISTS: 'Sessão já existe',
+    SESSION_CONNECTION_FAILED: 'Falha na conexão da sessão',
+    MESSAGE_VALIDATION_FAILED: 'Falha na validação da mensagem',
+    MESSAGE_SENDING_FAILED: 'Falha no envio da mensagem',
+    MESSAGE_QUEUE_FULL: 'Fila de mensagens cheia',
+    AUTH_FAILED: 'Falha na autenticação',
+    QR_CODE_EXPIRED: 'QR Code expirado',
+    SYSTEM_ERROR: 'Erro interno do sistema',
+    MAINTENANCE_ERROR: 'Erro durante manutenção',
+    INTERNAL_ERROR: 'Erro interno',
+  },
+};
