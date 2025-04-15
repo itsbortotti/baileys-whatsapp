@@ -1,8 +1,9 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { closeRedisConnection, sessionMiddleware } from './config/redis.config';
+
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
-import { sessionMiddleware, closeRedisConnection } from './config/redis.config';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -23,7 +24,6 @@ async function bootstrap() {
     .setTitle('API WhatsApp Baileys')
     .setDescription('API de integração com WhatsApp usando Baileys')
     .setVersion('1.0')
-    .addTag('whatsapp', 'Operações relacionadas ao WhatsApp')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
