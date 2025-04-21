@@ -34,6 +34,21 @@ export class WhatsappController {
     };
   }
 
+  @Get('session/:sessionId/qr')
+  @ApiOperation({ summary: 'Obter QR Code da sessão' })
+  @ApiResponse({ status: 200, description: 'QR Code obtido com sucesso' })
+  @ApiResponse({ status: 404, description: 'Sessão não encontrada' })
+  @ApiResponse({ status: 400, description: 'Sessão já está conectada' })
+  async getSessionQRCode(@Param('sessionId') sessionId: string): Promise<IApiResponse<{ qrCode: string }>> {
+    const qrCode = await this.whatsappService.getSessionQRCode(sessionId);
+    return {
+      success: true,
+      data: { qrCode },
+      message: 'QR Code obtido com sucesso',
+      timestamp: new Date().toISOString()
+    };
+  }
+
   @Get('sessions')
   @ApiOperation({ summary: 'Listar todas as sessões' })
   @ApiResponse({ status: 200, description: 'Lista de sessões obtida com sucesso' })
