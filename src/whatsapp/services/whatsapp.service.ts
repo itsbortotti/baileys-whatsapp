@@ -1,3 +1,5 @@
+import * as qrcode from 'qrcode-terminal';
+
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { SessionAlreadyExistsException, SessionNotFoundException, WhatsAppException } from '../exceptions/whatsapp.exception';
 import { SessionsList, WhatsappSession } from '../interfaces/session.interface';
@@ -121,6 +123,9 @@ export class WhatsappService {
       );
     }
   
+    // Gera o QR code no terminal quando solicitado via endpoint
+    qrcode.generate(session.qrCode, { small: true });
+    
     return session.qrCode;
   }
 }

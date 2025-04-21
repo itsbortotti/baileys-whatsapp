@@ -1,3 +1,5 @@
+import * as qrcode from 'qrcode-terminal';
+
 import { Injectable, Logger } from '@nestjs/common';
 import makeWASocket, { DisconnectReason, WASocket, useMultiFileAuthState } from '@whiskeysockets/baileys';
 
@@ -26,7 +28,7 @@ export class WhatsAppConnectionService {
 
     const sock = makeWASocket({
       auth: state,
-      printQRInTerminal: true,
+      printQRInTerminal: false, // Desativamos a impressão automática
     });
 
     this.setupConnectionListeners(sock, sessionId, onUpdate, saveCreds);
@@ -43,12 +45,17 @@ export class WhatsAppConnectionService {
     onUpdate: (sessionData: Partial<IWhatsAppSessionData>) => void,
     saveCreds: () => Promise<void>,
   ): void {
+    let firstQR = true;
+
     sock.ev.on('connection.update', async (update) => {
       const { connection, lastDisconnect, qr } = update;
       this.logger.debug(`Atualização de conexão para sessão ${sessionId}: ${connection}`);
 
-      if (qr) {
+      if (qr && firstQR) {
         this.logger.log(`Novo QR Code gerado para sessão ${sessionId}`);
+        // Gera o QR code no terminal apenas na primeira vez
+        qrcode.generate(qr, { small: true });
+        firstQR = false;
         onUpdate({ qrCode: qr });
       }
 
@@ -66,7 +73,7 @@ export class WhatsAppConnectionService {
 
       if (connection === 'open') {
         this.logger.log(`Sessão ${sessionId} conectada com sucesso`);
-        onUpdate({ connected: true });
+        onUpdate({ connected: true, qrCode: undefined }); // Limpa o QR code quando conecta
       }
     });
 
