@@ -1,55 +1,34 @@
-import { SessionStatus } from '../constants/whatsapp.constants';
-import { WASocket } from '@whiskeysockets/baileys';
+import { ApiProperty } from '@nestjs/swagger';
 
-/**
- * Interface que representa uma sessão do WhatsApp
- */
-export interface Session {
-  /**
-   * Identificador único da sessão
-   */
-  id: string;
+export class WhatsappSession {
+  @ApiProperty({ description: 'ID único da sessão do WhatsApp' })
+  sessionId: string;
 
-  /**
-   * Socket de conexão com a API do WhatsApp
-   * Pode ser indefinido durante a inicialização da sessão
-   */
-  socket?: WASocket;
+  @ApiProperty({ description: 'Status de conexão da sessão' })
+  connected: boolean;
 
-  /**
-   * Indica se a sessão está conectada ao WhatsApp
-   * true = conectada, false = desconectada ou em processo de conexão
-   */
-  isConnected: boolean;
-
-  /**
-   * String do QR Code para autenticação
-   * Disponível apenas durante o processo de pareamento
-   */
-  qr?: string;
+  @ApiProperty({ description: 'QR Code para autenticação do WhatsApp Web', required: false })
+  qrCode?: string;
 }
 
-/**
- * Interface que representa informações de estado de uma sessão
- */
-export interface SessionInfo {
-  /**
-   * Identificador único da sessão
-   */
-  id: string;
+export class SessionsList {
+  @ApiProperty({ description: 'Número total de sessões' })
+  count: number;
 
-  /**
-   * Indica se a sessão está conectada ao WhatsApp
-   */
-  isConnected: boolean;
+  @ApiProperty({ description: 'Lista de sessões ativas', type: [WhatsappSession] })
+  sessions: WhatsappSession[];
+}
 
-  /**
-   * Data de criação da sessão
-   */
-  createdAt: Date;
+export class ApiResponse<T> {
+  @ApiProperty({ description: 'Indica se a operação foi bem-sucedida' })
+  success: boolean;
 
-  /**
-   * QR Code para autenticação (opcional)
-   */
-  qr?: string;
+  @ApiProperty({ description: 'Dados retornados pela API' })
+  data: T;
+
+  @ApiProperty({ description: 'Mensagem descritiva da operação', required: false })
+  message?: string;
+
+  @ApiProperty({ description: 'Data e hora da resposta' })
+  timestamp: string;
 }
