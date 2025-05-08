@@ -1,18 +1,20 @@
-import * as qrcode from 'qrcode-terminal';
-
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { SessionAlreadyExistsException, SessionNotFoundException, WhatsAppException } from '../exceptions/whatsapp.exception';
+import { Injectable, Logger } from '@nestjs/common';
+import { SessionAlreadyExistsException, SessionNotFoundException } from '../exceptions/whatsapp.exception';
 import { SessionsList, WhatsappSession } from '../interfaces/session.interface';
 
 import { IWhatsAppSessionData } from '../interfaces/whatsapp-session.interface';
 import { WhatsAppConnectionService } from './whatsapp-connection.service';
+import { WhatsAppQRService } from '../services/whatsapp-qr.service';
 
 @Injectable()
 export class WhatsappService {
   private sessions: Map<string, IWhatsAppSessionData> = new Map();
   private readonly logger = new Logger(WhatsappService.name);
 
-  constructor(private readonly connectionService: WhatsAppConnectionService) {}
+  constructor(
+    private readonly connectionService: WhatsAppConnectionService,
+    private readonly qrService: WhatsAppQRService
+  ) {}
 
   /**
    * Cria uma nova sessão do WhatsApp
@@ -89,7 +91,8 @@ export class WhatsappService {
       throw new SessionNotFoundException(sessionId);
     }
 
-    await this.connectionService.closeConnection(session.sock);
+    await session.sock.logout();
+    await session.sock.end(new Error('Session terminated'));
     this.sessions.delete(sessionId);
     this.logger.log(`Sessão ${sessionId} removida com sucesso`);
   }
@@ -98,34 +101,25 @@ export class WhatsappService {
    * Obtém o QR Code de uma sessão não conectada
    * @param sessionId ID da sessão
    * @returns QR Code da sessão
-   * @throws SessionNotFoundException se a sessão não existir
-   * @throws WhatsAppException se a sessão já estiver conectada
    */
   async getSessionQRCode(sessionId: string): Promise<string> {
-    this.logger.debug(`Obtendo QR Code da sessão: ${sessionId}`);
+    const session = this.sessions.get(sessionId);
+    return await this.qrService.getQRCode(sessionId, session);
+  }
+
+  /**
+   * Obtém uma sessão pelo ID
+   * @param sessionId ID da sessão
+   * @returns Dados da sessão
+   * @throws SessionNotFoundException se a sessão não existir
+   */
+  async getSession(sessionId: string): Promise<IWhatsAppSessionData> {
     const session = this.sessions.get(sessionId);
   
     if (!session) {
       throw new SessionNotFoundException(sessionId);
     }
   
-    if (session.connected) {
-      throw new WhatsAppException(
-        'Não é possível gerar QR Code para uma sessão já conectada',
-        HttpStatus.BAD_REQUEST
-      );
-    }
-  
-    if (!session.qrCode) {
-      throw new WhatsAppException(
-        'QR Code ainda não está disponível',
-        HttpStatus.NOT_FOUND
-      );
-    }
-  
-    // Gera o QR code no terminal quando solicitado via endpoint
-    qrcode.generate(session.qrCode, { small: true });
-    
-    return session.qrCode;
+    return session;
   }
 }

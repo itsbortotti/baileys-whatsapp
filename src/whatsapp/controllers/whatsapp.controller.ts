@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { WhatsappService } from '../services/whatsapp.service';
 import { WhatsappSession, SessionsList, ApiResponse as IApiResponse } from '../interfaces/session.interface';
 
-@ApiTags('WhatsApp')
+@ApiTags('WhatsApp Connection')
 @Controller('whatsapp')
 export class WhatsappController {
   constructor(private readonly whatsappService: WhatsappService) {}
